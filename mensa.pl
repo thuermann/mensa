@@ -1,6 +1,9 @@
 #!/usr/local/bin/perl
 #
 # $Log: mensa.pl,v $
+# Revision 1.7  1994/09/22 20:24:27  urs
+# Accept dates in the form dd.mm.[cc]yy on the command line
+#
 # Revision 1.6  1994/07/08 16:59:56  urs
 # Check the return code of open
 #
@@ -23,6 +26,7 @@
 
 
 # These values should be taken from /usr/local/lib/mensa
+# sync should be the date of a first week's Monday.
 $nweeks = 6;
 @sync   = (1994,2,7);
 
@@ -34,33 +38,41 @@ $db = '/usr/local/lib/mensa';
 @names = ('Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag',
 	'Sonnabend', 'Sonntag');
 
-$warp = shift if (@ARGV);
-$warp *= 86400;
+# The regular expr for dates with three parenthesized sub-expressions
+$date = "(\\d+)\\.(\\d+)\\.(\\d+)";
 
-($year,$wday,$yday) = (localtime(time + $warp))[5..7];
-$year += 1900;
+if ($_ = $ARGV[0], /$date/) {
+	$year = $3;
+	$year += 1900 if ($year < 1900);
+	@today = &yday($year,$2,$1);
+} else {
+	$warp = shift if (@ARGV);
+	$warp *= 86400;
 
-$wday = int (($wday + 6) % 7);	# make monday = 0, tuesday = 1, ...
-
-$day  = &diff(&yday(@sync), $year, $yday);
-$week = int($day / 7) % $nweeks + 1;
+	@today = (localtime(time + $warp))[5,7];
+	@today[0] += 1900;
+}
 
 open(LIB, $db) || die "Can't open $db\n";
 
 while ($_ = <LIB>, !/^\*/) {
-	if (/^\$[SC] *(\d+)\.(\d+)\.(\d+) *- *(\d+)\.(\d+)\.(\d+)/) {
+	if (/^\$[SC] *$date *- *$date/) {
 		# get dates to @date1 and @date2
 		@date1 = &yday($3,$2,$1);
 		@date2 = &yday($6,$5,$4);
 
-		if (&diff(@date1, ($year,$yday)) >= 0
-		    && &diff(($year,$yday), @date2) >= 0) {
+		if (&diff(@date1, @today) >= 0
+		    && &diff(@today, @date2) >= 0) {
 			print "Mensa geschlossen\n" if (/\$C/);
 			print "Sonderwoche\n" if (/\$S/);
 			exit;
 		}
 	}
 }
+
+$day  = &diff(&yday(@sync), @today);
+($week, $wday) = &divmod($day, 7);
+$week = $week % $nweeks + 1;
 
 print "$week. Woche $names[$wday]\n";
 
@@ -121,4 +133,15 @@ sub yday {
 	$yd++ if ($y % 4 == 0 && $m > 2);
 
 	return ($y, $yd);
+}
+
+# return (floor(n/d), n%d)
+sub divmod {
+	local($n, $d) = @_;
+
+	local($q, $r) = (int($n / $d), $n % $d);
+	if ($n < 0 && $r != 0) {
+		$q--;
+	}
+	return ($q, $r);
 }

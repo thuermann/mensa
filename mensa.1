@@ -3,15 +3,18 @@
 mensa \- show mensa menu
 .SH SYNOPSIS
 .B mensa
-[days]
+[days | date]
 .SH DESCRIPTION
 .B mensa
 reads the mensa data file and prints the mensa menu for one day on
 standard output.  If no argument is given
 .B mensa
-prints the menu for today, otherwise the argument, which may be a positive
-or negative number, is interpreted as the number of days to add to today
-to get the day the menu is requested for.
+prints the menu for today. Otherwise, if the argument is a positive or
+negative number, it is interpreted as the number of days to add to
+today to get the day the menu is requested for.  If the argument is a
+date in the form day.month.[century]year
+.B mensa
+prints the menu for that date.
 .SH FILES
 .TP 25
 /usr/local/lib/mensa
