@@ -1,6 +1,9 @@
 #!/usr/local/bin/perl
 #
 # $Log: mensa.pl,v $
+# Revision 1.3  1994/07/06 21:02:30  urs
+# Make library file name configurable through variable
+#
 # Revision 1.2  1994/07/06 21:02:10  urs
 # Use localtime instead of gmtime
 #
@@ -13,6 +16,8 @@
 # These values should be taken from /usr/local/lib/mensa
 $nweeks = 6;
 $sync   = 25;
+
+$db = '/usr/local/lib/mensa';
 
 @names = ('Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag',
 	'Sonnabend', 'Sonntag');
@@ -29,7 +34,7 @@ $wday = int (($wday + 6) % 7);	# make monday = 0, tuesday = 1, ...
 $day = int((time + $warp) / 86400) - $sync;
 $week = int($day / 7) % $nweeks + 1;
 
-open(LIB, '/usr/local/lib/mensa');
+open(LIB, $db);
 
 while ($_ = <LIB>, !/^\*/) {
 	if (/^$C/) {}
