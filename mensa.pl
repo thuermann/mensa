@@ -1,6 +1,9 @@
 #!/usr/local/bin/perl
 #
 # $Log: mensa.pl,v $
+# Revision 1.2  1994/07/06 21:02:10  urs
+# Use localtime instead of gmtime
+#
 # Revision 1.1  1994/06/30 17:27:15  urs
 # Add script to print the menu of the day for the TU-BS mensa
 #
@@ -18,7 +21,7 @@ $warp = shift if (@ARGV);
 $warp *= 86400;
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
-	gmtime(time + $warp);
+	localtime(time + $warp);
 # print "$sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst\n";
 
 $wday = int (($wday + 6) % 7);	# make monday = 0, tuesday = 1, ...
