@@ -1,6 +1,9 @@
 #!/usr/local/bin/perl
 #
 # $Log: mensa.pl,v $
+# Revision 1.6  1994/07/08 16:59:56  urs
+# Check the return code of open
+#
 # Revision 1.5  1994/07/06 21:11:30  urs
 # Handle $C and $S specifications
 #
@@ -42,7 +45,7 @@ $wday = int (($wday + 6) % 7);	# make monday = 0, tuesday = 1, ...
 $day  = &diff(&yday(@sync), $year, $yday);
 $week = int($day / 7) % $nweeks + 1;
 
-open(LIB, $db);
+open(LIB, $db) || die "Can't open $db\n";
 
 while ($_ = <LIB>, !/^\*/) {
 	if (/^\$[SC] *(\d+)\.(\d+)\.(\d+) *- *(\d+)\.(\d+)\.(\d+)/) {
