@@ -1,6 +1,9 @@
 #!/usr/local/bin/perl
 #
 # $Log: mensa.pl,v $
+# Revision 1.4  1994/07/06 21:02:59  urs
+# Some code cleanup
+#
 # Revision 1.3  1994/07/06 21:02:30  urs
 # Make library file name configurable through variable
 #
@@ -54,19 +57,19 @@ if ($wday == 6) {
 	exit;
 }
 
+# skip to the appropriate day ...
+
 while ($week > 1) {
-	$week--;
-	do {
-		$_ = <LIB>;
-	} until (/^\*/);
+	$_ = <LIB>;
+	$week-- if (/^\*/);
 }
 
-while ($wday) {
-	$wday--;
-	do {
-		$_ = <LIB>;
-	} until (/^#/);
+while ($wday > 0) {
+	$_ = <LIB>;
+	$wday-- if (/^#/);
 }
+
+# ... and print the menu
 
 while ($_ = <LIB>, !/^(#|\*)/) {
 	if (/^\\/) {
