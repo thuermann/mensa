@@ -1,0 +1,24 @@
+.TH mensa 1L
+.SH NAME
+mensa \- show mensa menu
+.SH SYNOPSIS
+.B mensa
+[days]
+.SH DESCRIPTION
+.B mensa
+reads the mensa data file and prints the mensa menu for one day on
+standard output.  If no argument is given
+.B mensa
+prints the menu for today, otherwise the argument, which may be a positive
+or negative number, is interpreted as the number of days to add to today
+to get the day the menu is requested for.
+.SH FILES
+.TP 25
+/usr/local/lib/mensa
+The mensa data file.
+.SH AUTHOR
+Urs Thuermann (thuerman@ibr.cs.tu-bs.de)
+.SH BUGS
+Too bad that
+.B mensa
+won't work correctly after December 31, 2100 (since that isn't a leap year).
